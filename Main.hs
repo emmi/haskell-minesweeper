@@ -4,59 +4,98 @@
 module Main where
 
 import Control.Monad
+import Text.Printf
 import Data.List
+import System.Random (randomIO)
 
-data Point = Point (Int, Int) deriving (Show, Eq)
+filePath :: FilePath
+filePath = "words.txt"
 
-data Board = Board {
-  points :: [[(Int, Int)]]
-} deriving (Show, Eq)
+-- data Point = Point (Int, Int) deriving (Show, Eq)
+--
+-- data Board = Board {
+--   points :: [[(Int, Int)]]
+-- } deriving (Show, Eq)
 
 data State = State {
-  board :: Board
+  wordToGuess :: String,
+  guessCount :: Int
 }
 
 
-generateNewBoard :: State -> State
-generateNewBoard state =
-  let locations = map (\x -> (map (\y -> (x,y)) [0,1..9])) [0,1..9]
-  in state { board = Board locations }
+-- generateNewBoard :: State -> State
+-- generateNewBoard state =
+--   let locations = map (\x -> (map (\y -> (x,y)) [0,1..9])) [0,1,2]
+--   in state { board = Board locations }
+--
+-- -- printBoard :: Board -> IO()
+-- printBoard board =
+--   -- let characters = foldl (\acc row -> acc ++ (foldl (\acc_ point -> acc_ ++ printCharacter point) acc row)) [] (points board)
+--   -- let characters = map (\acc_ row -> printRow row) (points board)
+--     --   characters2 = foldl (\acc_ point -> acc_ ++ printCharacter point) [] ()
+--   -- let characters = map (map printCharacter) (points board)
+--   --     characters2 = foldl (\acc point -> acc ++ point) [] characters
+--   --   -- map (map change) $ itrCol xs
+--   --
+--   --   in printBoard2 characters2
+--   -- in putStrLn "Böö"
 
-printBoard :: Board -> IO()
-printBoard board =
-  let characters = foldl (\acc row -> acc ++ (foldl (\acc_ point -> acc_ ++ printCharacter point) acc row)) [] (points board)
-  in putStr characters
+-- printBoard2 :: [String] -> IO()
+-- printBoard2 board = putStrLn board
 
-printCharacter :: (Int, Int) -> String
-printCharacter point
- | snd point == 9 = " *\n"
- | fst point == 0 || fst point == 9 = " * "
- | snd point == 0  = " * "
- | otherwise = "   "
+-- printRow :: [(Int, Int)] -> IO()
+-- printRow row =
+--   print "tylos"
 
-loop state = do
+-- printCharacter :: (Int, Int) -> String
+-- printCharacter point
+--  | snd point == 9 = " *\n"
+--  | fst point == 0 || fst point == 2 = " * "
+--  | snd point == 0  = " x "
+--  | otherwise = "   "
+
+gameLoop :: State -> IO()
+gameLoop gameState = do
+    putStrLn ("Etsitty sana on = " ++ (wordToGuess gameState) ++ " ja vääriä arvauksia " ++ show (guessCount gameState))
+    putStrLn ("Syötä uusi kirjain")
+    c <- getChar
+    putStrLn ("Syötetty kirjain oli " ++ [c])
+
+newGame :: String -> IO()
+newGame filename = do
+    contents <- readFile filename
+    let words' = lines contents
+    let wordCount = length words'
+    randomNumber <- randomIO
+    let randomWord = words' !! (randomNumber `mod` wordCount)
+    putStrLn ("Haettu sana " ++ randomWord)
+    gameLoop (State randomWord 0)
+
+loop = do
   line <- getLine
   case line of
+    -- "newBoard" -> do
+    --   putStrLn "Luodaan uusi kenttä"
+    --   let updatedState = generateNewBoard state
+    --       -- board > board updatedState
+    --   print (board updatedState)
+    --   loop
+    -- "print" -> do
+    --   putStrLn "Tulostetaan kenttä"
+    --   printBoard (board state)
+    --   putStrLn "tulostettu"
+    --   loop state
     "new" -> do
-      putStrLn "Luodaan uusi kenttä"
-      let updatedState = generateNewBoard state
-      print (board updatedState)
-      loop updatedState
-    "print" -> do
-      putStrLn "Tulostetaan kenttä"
-      printBoard (board state)
-      putStrLn "tulostettu"
-      loop state
-    "guess" -> do
-      putStrLn "Siirretään"
-      loop state
+        putStrLn "Aloitetaan uusi peli"
+        newGame filePath
+        loop
     "quit" -> do
       putStrLn "Lopetetaan"
     _ -> do
       putStrLn "Tuntematon komento"
-      loop state
+      loop
 
-main = loop (State (Board []))
+main = loop
 
 
 
