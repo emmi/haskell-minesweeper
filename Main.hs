@@ -28,6 +28,17 @@ data State = State {
   guesses :: [Char]
 }
 
+getHiddenCharacter :: Char -> String -> Char
+getHiddenCharacter character guesses = if (character `elem` guesses)
+                                        then character
+                                        else '_'
+
+
+getHiddenWord :: String -> String -> String
+getHiddenWord wordToGuess [] = take (length wordToGuess) (repeat '_')
+getHiddenWord [] _ = []
+getHiddenWord (x:xs) guesses = [getHiddenCharacter x guesses] ++ getHiddenWord xs guesses
+
 findMatch :: State -> Char -> State
 findMatch state newChar =
     if (newChar `elem` (wordToGuess state))
@@ -61,6 +72,9 @@ gameLoop gameState = do
     c <- getChar
     putStrLn ("Syötetty kirjain oli " ++ [c])
     putStrLn printedState
+    let hiddenWord = getHiddenWord (wordToGuess gameState) (guesses gameState)
+    putStrLn "**** ARVATTAVA SANA ****"
+    putStrLn ("        " ++ hiddenWord ++ "\n")
     newChar <- getNewCharacter (guesses gameState)
     let newState = findMatch gameState newChar
     gameLoop gameState { guessCount = guessCount newState, guesses = guesses gameState ++ [newChar] }
