@@ -11,6 +11,16 @@ import System.Random (randomIO)
 filePath :: FilePath
 filePath = "words.txt"
 
+printedState :: String
+printedState = unlines [
+    "-------------",
+    "             ",
+    "             ",
+    "             ",
+    "             ",
+    "             ",
+    "-------------"
+    ]
 
 data State = State {
   wordToGuess :: String,
@@ -50,6 +60,7 @@ gameLoop gameState = do
     putStrLn ("Syötä uusi kirjain")
     c <- getChar
     putStrLn ("Syötetty kirjain oli " ++ [c])
+    putStrLn printedState
     newChar <- getNewCharacter (guesses gameState)
     let newState = findMatch gameState newChar
     gameLoop gameState { guessCount = guessCount newState, guesses = guesses gameState ++ [newChar] }
