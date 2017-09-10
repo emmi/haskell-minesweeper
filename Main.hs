@@ -67,10 +67,6 @@ getNewCharacter guesses = do
 
 gameLoop :: State -> IO()
 gameLoop gameState = do
-    putStrLn ("Etsitty sana on = " ++ (wordToGuess gameState) ++ " ja vääriä arvauksia " ++ show (guessCount gameState))
-    putStrLn ("Syötä uusi kirjain")
-    c <- getChar
-    putStrLn ("Syötetty kirjain oli " ++ [c])
     putStrLn printedState
     let hiddenWord = getHiddenWord (wordToGuess gameState) (guesses gameState)
     putStrLn "**** ARVATTAVA SANA ****"
@@ -86,7 +82,6 @@ newGame filename = do
     let wordCount = length words'
     randomNumber <- randomIO
     let randomWord = words' !! (randomNumber `mod` wordCount)
-    putStrLn ("Haettu sana " ++ randomWord)
     gameLoop (State randomWord 0 [])
 
 loop = do
