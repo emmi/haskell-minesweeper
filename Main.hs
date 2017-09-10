@@ -18,6 +18,14 @@ data State = State {
   guesses :: [Char]
 }
 
+findMatch :: State -> Char -> State
+findMatch state newChar =
+    if (newChar `elem` (wordToGuess state))
+    then
+        state
+    else
+        state { guessCount = (guessCount state) + 1 }
+
 getCharacter :: IO Char
 getCharacter = do
     line <- getLine
@@ -43,6 +51,8 @@ gameLoop gameState = do
     c <- getChar
     putStrLn ("Syötetty kirjain oli " ++ [c])
     newChar <- getNewCharacter (guesses gameState)
+    let newState = findMatch gameState newChar
+    gameLoop gameState { guessCount = guessCount newState, guesses = guesses gameState ++ [newChar] }
 
 newGame :: String -> IO()
 newGame filename = do
