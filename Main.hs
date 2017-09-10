@@ -18,6 +18,23 @@ data State = State {
   guesses :: [Char]
 }
 
+getCharacter :: IO Char
+getCharacter = do
+    line <- getLine
+    case line of
+        [] -> getCharacter
+        (c:_) -> return c
+
+getNewCharacter :: [Char] -> IO Char
+getNewCharacter guesses = do
+    putStrLn "**** SYÖTÄ KIRJAIN ***"
+    c <- getCharacter
+    if (c `elem` guesses)
+    then do
+        putStrLn "Merkkiä on haettu jo"
+        getNewCharacter guesses
+    else
+        return c
 
 gameLoop :: State -> IO()
 gameLoop gameState = do
@@ -25,6 +42,7 @@ gameLoop gameState = do
     putStrLn ("Syötä uusi kirjain")
     c <- getChar
     putStrLn ("Syötetty kirjain oli " ++ [c])
+    newChar <- getNewCharacter (guesses gameState)
 
 newGame :: String -> IO()
 newGame filename = do
