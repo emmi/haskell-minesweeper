@@ -14,7 +14,8 @@ filePath = "words.txt"
 
 data State = State {
   wordToGuess :: String,
-  guessCount :: Int
+  guessCount :: Int,
+  guesses :: [Char]
 }
 
 
@@ -33,7 +34,7 @@ newGame filename = do
     randomNumber <- randomIO
     let randomWord = words' !! (randomNumber `mod` wordCount)
     putStrLn ("Haettu sana " ++ randomWord)
-    gameLoop (State randomWord 0)
+    gameLoop (State randomWord 0 [])
 
 loop = do
     putStrLn "**** UUSI PELI ****"
