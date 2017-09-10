@@ -36,16 +36,8 @@ newGame filename = do
     gameLoop (State randomWord 0)
 
 loop = do
-  line <- getLine
-  case line of
-    "new" -> do
-        putStrLn "Aloitetaan uusi peli"
-        newGame filePath
-        loop
-    "quit" -> do
-      putStrLn "Lopetetaan"
-    _ -> do
-      putStrLn "Tuntematon komento"
-      loop
+    putStrLn "**** UUSI PELI ****"
+    putStrLn "*******************"
+    newGame filePath
 
 main = loop
